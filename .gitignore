@@ -1,6 +1,9 @@
 # Database (large CSV files exceed GitHub 100MB limit)
 Database/
 
+# Environment
+.env.local
+
 # OS
 .DS_Store
 Thumbs.db
@@ -10,4 +13,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-

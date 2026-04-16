@@ -1,77 +1,41 @@
 # Contributing Guide
 
-## Branch Strategy: GitHub Flow
+이 프로젝트는 **Git Flow** 브랜치 전략을 사용합니다. 자세한 사용법은 [README.md](README.md)를 참고하세요.
 
-`main` 브랜치는 항상 배포 가능한 상태를 유지합니다. 모든 작업은 feature 브랜치에서 진행하고, PR을 통해 main에 머지합니다.
+## Quick Reference
 
-```
-main ──────────────────────────────────
-  \                          /
-   feature/my-work ─── PR ──┘
-```
+### 브랜치
 
-## Workflow
+| 브랜치 | 역할 | 직접 push |
+|--------|------|-----------|
+| `main` | 배포 버전 | 금지 |
+| `develop` | 통합 테스트 | 금지 |
+| `feature/*` | 기능 개발 | 자유 |
+| `hotfix/*` | 긴급 수정 | 자유 |
 
-1. **main에서 브랜치 생성**
-   ```bash
-   git checkout main
-   git pull origin main
-   git checkout -b feature/my-feature
-   ```
-
-2. **작업 후 커밋 & 푸시**
-   ```bash
-   git add .
-   git commit -m "feat: 기능 설명"
-   git push origin feature/my-feature
-   ```
-
-3. **PR 생성 → 코드 리뷰 → 머지**
-
-4. **머지 후 로컬 정리**
-   ```bash
-   git checkout main
-   git pull origin main
-   git branch -d feature/my-feature
-   ```
-
-## Branch Naming
-
-| Prefix | 용도 | 예시 |
-|--------|------|------|
-| `feature/` | 새 기능 | `feature/dashboard-chart` |
-| `fix/` | 버그 수정 | `fix/login-error` |
-| `hotfix/` | 긴급 수정 | `hotfix/api-crash` |
-| `refactor/` | 리팩토링 | `refactor/auth-module` |
-| `docs/` | 문서 작업 | `docs/api-guide` |
-
-## Commit Message
-
-```
-<type>: <설명>
-
-예시:
-feat: 대시보드 차트 컴포넌트 추가
-fix: 로그인 시 토큰 만료 에러 수정
-refactor: API 클라이언트 구조 개선
-docs: README 업데이트
-style: 버튼 컴포넌트 스타일 수정
-chore: 패키지 업데이트
-```
-
-## PR Rules
-
-- PR 제목은 커밋 메시지 컨벤션을 따릅니다
-- `npm run build` 성공 확인 후 PR을 올려주세요
-- 최소 1명의 리뷰어 승인 후 머지합니다
-- Squash merge를 사용합니다
-
-## Development
+### 새 기능 작업
 
 ```bash
-cd project
-npm install
-npm run dev      # 개발 서버
-npm run build    # 빌드 확인
-npm run lint     # 린트 확인
+git checkout develop && git pull origin develop
+git checkout -b feature/기능명
+# 작업...
+git add . && git commit -m "feat: 설명" && git push origin feature/기능명
+# GitHub에서 PR 생성 (base: develop)
 ```
+
+### 커밋 타입
+
+`feat` · `fix` · `style` · `refactor` · `docs` · `chore`
+
+### PR 체크리스트
+
+- [ ] `npm run build` 성공
+- [ ] `npm run lint` 통과
+- [ ] 새 컴포넌트에 `"use client"` 추가
+- [ ] 자체 테스트 완료
+
+### Supabase
+
+- 로컬 Docker 기반 (`127.0.0.1:54321`)
+- `.env.local`은 gitignore 대상 — 팀원에게 별도 공유
+- Supabase MCP 도구 사용 금지, CLI(`npx supabase`)와 `psql`만 사용

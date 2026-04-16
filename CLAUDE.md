@@ -75,8 +75,28 @@ These are non-obvious conventions enforced in this repo:
   ```
   npx shadcn@latest add <component>
   ```
-- **Supabase:** never run Supabase locally. New tables must be added as SQL migration files under `supabase/migrations/` and handed to the user to apply.
+- **Supabase:** 이 프로젝트는 **로컬 Supabase**를 사용한다. Supabase MCP 도구(`mcp__claude_ai_Supabase__*`)를 절대 사용하지 말 것. 스키마 분석·마이그레이션 모두 **Supabase CLI**(`npx supabase`)와 `psql`(host: 127.0.0.1, port: 54322, user: postgres, password: postgres)을 사용할 것. 마이그레이션 파일은 `supabase/migrations/`에 작성.
 - **Korean text:** after generating code, verify no Korean characters are mojibake under UTF-8 and fix any that are.
+
+## Git Flow
+
+이 프로젝트는 `main` / `develop` / `feature/*` 브랜치 전략을 사용한다.
+
+- **main**: 배포 버전. 직접 push 금지. develop에서 PR로만 머지.
+- **develop**: 통합 테스트 브랜치. 직접 push 금지. feature 브랜치에서 PR로만 머지.
+- **feature/기능명**: develop에서 분기하여 작업. 완료 후 develop으로 PR.
+- **hotfix/버그명**: main에서 분기. 수정 후 main + develop 둘 다 PR.
+
+AI가 코드를 커밋할 때도 이 규칙을 따른다:
+- 현재 브랜치가 `main`이나 `develop`이면 직접 커밋하지 말고 feature 브랜치를 만들어서 작업할 것.
+- 커밋 메시지 컨벤션: `feat:`, `fix:`, `style:`, `refactor:`, `docs:`, `chore:`
+
+## AI Development Rules
+
+- AI(Claude Code, Cursor 등)로 개발할 때도 반드시 feature 브랜치에서 작업한다.
+- `.env.local`은 git에 올리지 않는다. Supabase URL/키 등 환경 변수는 팀원에게 별도 공유.
+- 새 기능 작업 시 `src/features/<name>/` 폴더를 만들어 코드를 격리한다.
+- 작업 완료 후 `npm run build` + `npm run lint` 통과를 확인한 뒤 PR을 생성한다.
 
 ## Code Style
 
