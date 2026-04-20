@@ -8,17 +8,16 @@ import {
   ChevronDown,
   Download,
   MoreHorizontal,
-  LayoutGrid,
-  Activity,
-  TrendingUp,
+  BarChart3,
+  FileSearch,
+  Table,
   RefreshCw,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useDashboardStore } from '../../hooks/use-dashboard-store';
-import { MAIN_TABS, MAIN_TAB_LABELS } from '../../constants/nav';
-import { type MainTab } from '../../hooks/use-dashboard-store';
-import { type SubTab } from '../../hooks/use-dashboard-store';
+import { MAIN_TABS, MAIN_TAB_LABELS, SIDEBAR_LABELS } from '../../constants/nav';
+import { type MainTab, type DetailTab } from '../../hooks/use-dashboard-store';
 import { StrategyHeaderBar } from '@/features/strategy/components/layout/strategy-header-bar';
 
 const TAB_ROUTES: Record<MainTab, string> = {
@@ -35,41 +34,46 @@ function getActiveMainTab(pathname: string): MainTab {
   return 'dashboard';
 }
 
-const SUB_TABS: { value: SubTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { value: 'overview', label: 'Overview', icon: LayoutGrid  },
-  { value: 'live',     label: 'Live',     icon: Activity    },
-  { value: 'forecast', label: 'Forecast', icon: TrendingUp  },
+const DETAIL_TABS: { value: DetailTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { value: 'chart',    label: 'Chart',           icon: BarChart3  },
+  { value: 'detail',   label: 'Detail Analysis', icon: FileSearch },
+  { value: 'raw-data', label: 'Raw Data',        icon: Table      },
 ];
 
 function DashboardHeaderBar() {
-  const { activeSubTab, setSubTab } = useDashboardStore();
+  const { activeSidebarItem, activeDetailTab, setDetailTab } = useDashboardStore();
+  const kpiLabel = SIDEBAR_LABELS[activeSidebarItem];
 
   return (
     <div className="flex h-11 items-center justify-between px-7">
-      {/* Sub-tab flat buttons */}
-      <div className="flex items-center gap-0.5">
-        {SUB_TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeSubTab === tab.value;
-          return (
-            <button
-              key={tab.value}
-              onClick={() => setSubTab(tab.value)}
-              className={cn(
-                'flex items-center gap-1.5 rounded-lg px-3 py-2 text-[0.8rem] font-medium transition-colors duration-150',
-                isActive
-                  ? 'bg-surface-container-low text-foreground font-semibold'
-                  : 'text-muted-foreground hover:bg-surface-container-low/60 hover:text-foreground'
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {tab.label}
-            </button>
-          );
-        })}
+      <div className="flex items-center gap-3">
+        <span className="text-[0.75rem] font-semibold text-muted-foreground">
+          {kpiLabel}
+        </span>
+        <div className="h-4 w-px bg-outline-variant/40" />
+        <div className="flex items-center gap-0.5">
+          {DETAIL_TABS.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeDetailTab === tab.value;
+            return (
+              <button
+                key={tab.value}
+                onClick={() => setDetailTab(tab.value)}
+                className={cn(
+                  'flex items-center gap-1.5 rounded-lg px-3 py-2 text-[0.8rem] font-medium transition-colors duration-150',
+                  isActive
+                    ? 'bg-surface-container-low text-foreground font-semibold'
+                    : 'text-muted-foreground hover:bg-surface-container-low/60 hover:text-foreground'
+                )}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Right controls */}
       <div className="flex items-center gap-2">
         <button className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-surface-container-low hover:text-foreground">
           <RefreshCw className="h-3.5 w-3.5" />
