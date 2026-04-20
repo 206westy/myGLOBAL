@@ -1,5 +1,18 @@
 {
     "env": {
       "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    },
+    "hooks": {
+      "SessionStart": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "echo '{\"systemMessage\": \"[Git Flow] 개발 작업 요청 시 현재 브랜치를 확인하세요. main 또는 develop 브랜치에 있으면 반드시 /dev-start 스킬을 먼저 실행하세요. 작업 완료 후에는 /dev-finish 를 실행하세요.\"}'",
+              "statusMessage": "Git Flow 규칙 로딩..."
+            }
+          ]
+        }
+      ]
     }
   }
