@@ -3,9 +3,11 @@
 ## 1. 레포 클론
 
 ```bash
-git clone https://github.com/206westy/myGLOBAL.git
+git clone --recurse-submodules https://github.com/206westy/myGLOBAL.git
 cd myGLOBAL
 ```
+
+> 이미 클론했는데 project 폴더가 비어있다면: `git submodule update --init --recursive`
 
 ## 2. develop 브랜치로 이동
 
