@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useDashboardStore, type MainTab } from '../../hooks/use-dashboard-store';
 
-const VALID_MAIN_TABS: MainTab[] = ['dashboard', 'ai-chat', 'agents', 'strategy', 'board'];
+const VALID_MAIN_TABS: MainTab[] = ['dashboard', 'workspace', 'strategy', 'aichat'];
 
 export function InitMainTabFromQuery() {
   const searchParams = useSearchParams();
