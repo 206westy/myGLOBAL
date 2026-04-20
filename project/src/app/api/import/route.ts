@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   let csvText: string
   const fullPath = resolve(PROJECT_ROOT, filePath)
   try {
-    csvText = readFileSync(fullPath, "utf-8")
+    csvText = readFileSync(fullPath, "utf-8").replace(/^\uFEFF/, "")
   } catch (err) {
     return new Response(`파일을 찾을 수 없습니다: ${fullPath}`, { status: 404 })
   }
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
         const parsed = Papa.parse<Record<string, string>>(csvText, {
           header: true,
           skipEmptyLines: true,
-          transformHeader: (h) => h.trim(),
+          transformHeader: (h) => h.replace(/\u00A0/g, " ").trim(),
         })
         const csvData = parsed.data
 

@@ -1,9 +1,14 @@
 export type TcodeKey =
   | "ZCSR0010"
+  | "ZCSR0070D_INSTALL"
   | "ZCSR0070D"
-  | "ZCSR0070D_TASK"
+  | "ZCSR0140D"
   | "ZCSR0100"
   | "ZCSR0150"
+  | "ZCSR0210"
+  | "ZSDR0030D"
+  | "ZSDR0040D"
+  | "BRANCH"
 
 export type ImportPhase =
   | "parsing"

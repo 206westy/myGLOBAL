@@ -82,8 +82,8 @@ create table service_orders (
   order_type_name   text,
   order_title       text,
 
-  -- 장비 연결 (엄격한 FK: 참조 누락 시 에러 로깅 후 스킵)
-  equip_no          text not null references equipment(equip_no),
+  -- 장비 연결 (FK 없음: SAP 데이터에 equipment 미등록 장비 존재)
+  equip_no          text,
   sap_equip_no      text,
   wo                text,
   equip_id          text,
