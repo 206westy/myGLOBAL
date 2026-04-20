@@ -1,0 +1,183 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Core semantic tokens */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  /* Design guide extended tokens */
+  --color-primary-container: hsl(var(--primary-container));
+  --color-primary-fixed: hsl(var(--primary-fixed));
+  --color-on-primary-fixed-variant: hsl(var(--on-primary-fixed-variant));
+  --color-on-surface-variant: hsl(var(--on-surface-variant));
+  --color-outline-variant: hsl(var(--outline-variant));
+  --color-surface-container-low: hsl(var(--surface-container-low));
+
+  /* Typography — Plus Jakarta Sans for headlines, Inter for body */
+  --font-headline: var(--font-plus-jakarta-sans), 'Plus Jakarta Sans', sans-serif;
+  --font-body: var(--font-inter), Inter, sans-serif;
+  --font-sans: var(--font-inter), Inter, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Core shadcn tokens aligned with design guide */
+  --background: 220 18% 98%;         /* #F8F9FB — global surface */
+  --foreground: 210 12% 11%;         /* #191C1E — on-surface */
+  --card: 0 0% 100%;                 /* #FFFFFF — surface-container-lowest */
+  --card-foreground: 210 12% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 12% 11%;
+  --primary: 254 71% 55%;            /* #5F3ADD — signature primary */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 254 24% 47%;          /* #61549B */
+  --secondary-foreground: 0 0% 100%;
+  --muted: 220 14% 95%;              /* #F2F4F6 — surface-container-low */
+  --muted-foreground: 251 10% 30%;   /* #484555 — on-surface-variant */
+  --accent: 220 14% 95%;
+  --accent-foreground: 210 12% 11%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 255 20% 81%;             /* #C9C4D8 — outline-variant */
+  --input: 255 20% 81%;
+  --ring: 254 71% 55%;
+
+  /* Design guide extended tokens */
+  --primary-container: 252 92% 66%;        /* #7857F8 */
+  --primary-fixed: 258 100% 93%;           /* #E6DEFF */
+  --on-primary-fixed-variant: 257 79% 44%; /* #4918C8 */
+  --on-surface-variant: 251 10% 30%;       /* #484555 */
+  --outline-variant: 255 20% 81%;          /* #C9C4D8 */
+  --surface-container-low: 220 14% 95%;    /* #F2F4F6 */
+
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+}
+
+.dark {
+  --background: 210 12% 11%;
+  --foreground: 0 0% 98%;
+  --card: 210 12% 14%;
+  --card-foreground: 0 0% 98%;
+  --popover: 210 12% 14%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 254 80% 70%;
+  --primary-foreground: 254 71% 15%;
+  --secondary: 254 24% 35%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 210 12% 18%;
+  --muted-foreground: 0 0% 64%;
+  --accent: 210 12% 18%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 210 12% 22%;
+  --input: 210 12% 22%;
+  --ring: 254 80% 70%;
+  --primary-container: 252 65% 45%;
+  --primary-fixed: 258 40% 25%;
+  --on-primary-fixed-variant: 258 70% 60%;
+  --on-surface-variant: 0 0% 64%;
+  --outline-variant: 210 12% 30%;
+  --surface-container-low: 210 12% 15%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Tiptap editor styles */
+.tiptap-content .tiptap {
+  outline: none;
+  min-height: 200px;
+}
+
+.tiptap-content .tiptap h1,
+.tiptap-content .tiptap h2,
+.tiptap-content .tiptap h3 {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+.tiptap-content .tiptap h1 { font-size: 1.5rem; }
+.tiptap-content .tiptap h2 { font-size: 1.15rem; }
+.tiptap-content .tiptap h3 { font-size: 1rem; }
+
+.tiptap-content .tiptap p {
+  margin-bottom: 0.5em;
+  line-height: 1.6;
+  font-size: 0.875rem;
+  color: hsl(var(--foreground));
+}
+
+.tiptap-content .tiptap ul,
+.tiptap-content .tiptap ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.tiptap-content .tiptap ul { list-style: disc; }
+.tiptap-content .tiptap ol { list-style: decimal; }
+
+.tiptap-content .tiptap li {
+  margin-bottom: 0.25em;
+  font-size: 0.875rem;
+}
+
+.tiptap-content .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  height: 0;
+  opacity: 0.5;
+}
