@@ -27,7 +27,7 @@ npm install
 
 ```bash
 # project/.env.local
-NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_URL=http://<팀장 PC IP>:54321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=(팀장에게 받은 키)
 SUPABASE_SERVICE_ROLE_KEY=(팀장에게 받은 키)
 ```
@@ -41,7 +41,48 @@ npm run dev
 
 http://localhost:3000 에서 확인
 
-## 6. AI 코딩 도구 세팅
+---
+
+## 6. Supabase (공유 DB)
+
+Supabase는 팀장 PC의 Docker에서 실행됩니다. 동료는 Docker/Supabase를 설치할 필요 없이 팀장 PC에 원격 접속합니다.
+
+### 접속 정보
+
+| 항목 | URL |
+|------|-----|
+| Supabase API | `http://<팀장IP>:54321` |
+| Supabase Studio (웹 UI) | `http://<팀장IP>:54323` |
+| DB 직접 접속 (psql) | `psql -h <팀장IP> -p 54322 -U postgres -d postgres` (비번: `postgres`) |
+
+> 팀장 IP가 바뀌면 `.env.local`의 IP만 바꾸면 됩니다. 키는 동일.
+
+### DB 작업 방법
+
+**테이블 조회, 데이터 확인 등:**
+- Studio(`http://<팀장IP>:54323`)에서 웹으로 확인
+- 또는 psql로 직접 쿼리
+
+**마이그레이션 (스키마 변경):**
+
+```bash
+# 1. 마이그레이션 파일 생성 (로컬에서)
+npx supabase migration new 마이그레이션이름
+
+# 2. supabase/migrations/ 에 생성된 .sql 파일에 SQL 작성
+
+# 3. 원격 DB에 마이그레이션 적용
+psql -h <팀장IP> -p 54322 -U postgres -d postgres -f supabase/migrations/파일명.sql
+```
+
+**주의:**
+- Supabase MCP 도구 사용 금지
+- 팀장 PC가 꺼지면 DB 접근 불가
+- 같은 사내 네트워크(Wi-Fi/유선)에 있어야 접속 가능
+
+---
+
+## 7. AI 코딩 도구 세팅
 
 ### Claude Code (추천)
 
@@ -63,12 +104,12 @@ http://localhost:3000 에서 확인
 - 모든 컴포넌트 파일 상단에 `"use client"` 추가
 - 새 기능은 `src/features/기능명/` 폴더에 생성
 - shadcn/ui 컴포넌트는 직접 작성하지 말고 `npx shadcn@latest add 컴포넌트명`으로 설치
-- Supabase MCP 도구 사용 금지, CLI(`npx supabase`)와 `psql`만 사용
+- Supabase MCP 도구 사용 금지, psql과 CLI만 사용
 - 커밋 전 `npm run build` + `npm run lint` 통과 확인
 
 ---
 
-## 7. Git Flow 작업 방법
+## 8. Git Flow 작업 방법
 
 ### 새 기능 시작
 
