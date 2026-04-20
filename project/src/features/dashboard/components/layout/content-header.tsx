@@ -94,11 +94,34 @@ export function ContentHeader() {
 
   return (
     <div className="shrink-0 bg-card border-b border-outline-variant/30">
-      {/* Row 1: Page title + action icons */}
+      {/* Row 1: Page title + tab navigation + action icons */}
       <div className="flex h-14 items-center justify-between px-7">
         <h1 className="font-headline text-[1.45rem] font-bold tracking-tight text-foreground">
           {pageTitle}
         </h1>
+
+        <div className="flex items-center gap-1">
+          {MAIN_TABS.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeMainTab === tab.id;
+            return (
+              <Link
+                key={tab.id}
+                href={TAB_ROUTES[tab.id]}
+                className={cn(
+                  'flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[0.78rem] font-medium transition-colors duration-150',
+                  isActive
+                    ? 'bg-primary/10 text-primary font-semibold'
+                    : 'text-muted-foreground hover:bg-surface-container-low/60 hover:text-foreground'
+                )}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
+
         <div className="flex items-center gap-1">
           <button className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-surface-container-low hover:text-foreground">
             <Mail className="h-4 w-4" />
@@ -122,30 +145,7 @@ export function ContentHeader() {
         </div>
       </div>
 
-      {/* Row 2: Main tab navigation */}
-      <div className="flex h-11 items-center gap-1 border-t border-outline-variant/20 px-7">
-        {MAIN_TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeMainTab === tab.id;
-          return (
-            <Link
-              key={tab.id}
-              href={TAB_ROUTES[tab.id]}
-              className={cn(
-                'flex items-center gap-1.5 rounded-lg px-3 py-2 text-[0.8rem] font-medium transition-colors duration-150',
-                isActive
-                  ? 'bg-primary/10 text-primary font-semibold'
-                  : 'text-muted-foreground hover:bg-surface-container-low/60 hover:text-foreground'
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {tab.label}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Row 3: Sub-tabs + controls (context-aware) */}
+      {/* Row 2: Sub-tabs + controls (context-aware) */}
       {activeMainTab === 'strategy' ? <StrategyHeaderBar /> : activeMainTab === 'dashboard' ? <DashboardHeaderBar /> : null}
     </div>
   );

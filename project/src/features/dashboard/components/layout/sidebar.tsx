@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, Settings, HelpCircle, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -22,12 +23,12 @@ export function Sidebar() {
     <aside className="flex h-full w-60 shrink-0 flex-col bg-card border-r border-outline-variant/30">
       {/* Logo + collapse — height matches ContentHeader row 1 (h-14) */}
       <div className="flex h-14 shrink-0 items-center justify-between px-4 border-b border-outline-variant/30">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
           <MyGlobalMark size={26} />
           <span className="font-headline text-[0.95rem] font-bold tracking-tight text-foreground">
             my<span className="text-primary">GLOBAL</span>
           </span>
-        </div>
+        </Link>
         <button className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-surface-container-low hover:text-foreground">
           <ChevronLeft className="h-4 w-4" />
         </button>
