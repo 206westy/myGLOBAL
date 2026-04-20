@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Mail,
@@ -15,16 +16,22 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useDashboardStore } from '../../hooks/use-dashboard-store';
-import { MAIN_TAB_LABELS } from '../../constants/nav';
+import { MAIN_TABS, MAIN_TAB_LABELS } from '../../constants/nav';
 import { type MainTab } from '../../hooks/use-dashboard-store';
 import { type SubTab } from '../../hooks/use-dashboard-store';
 import { StrategyHeaderBar } from '@/features/strategy/components/layout/strategy-header-bar';
 
+const TAB_ROUTES: Record<MainTab, string> = {
+  dashboard:  '/dashboard',
+  workspace:  '/workspace',
+  strategy:   '/strategy',
+  aichat:     '/aichat',
+};
+
 function getActiveMainTab(pathname: string): MainTab {
-  if (pathname.startsWith('/strategy')) return 'strategy';
-  if (pathname.startsWith('/ai-chat'))  return 'ai-chat';
-  if (pathname.startsWith('/agents'))   return 'agents';
-  if (pathname.startsWith('/board'))    return 'board';
+  if (pathname.startsWith('/strategy'))  return 'strategy';
+  if (pathname.startsWith('/workspace')) return 'workspace';
+  if (pathname.startsWith('/aichat'))    return 'aichat';
   return 'dashboard';
 }
 
@@ -115,8 +122,31 @@ export function ContentHeader() {
         </div>
       </div>
 
-      {/* Row 2: Sub-tabs + controls (strategy-aware) */}
-      {activeMainTab === 'strategy' ? <StrategyHeaderBar /> : <DashboardHeaderBar />}
+      {/* Row 2: Main tab navigation */}
+      <div className="flex h-11 items-center gap-1 border-t border-outline-variant/20 px-7">
+        {MAIN_TABS.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeMainTab === tab.id;
+          return (
+            <Link
+              key={tab.id}
+              href={TAB_ROUTES[tab.id]}
+              className={cn(
+                'flex items-center gap-1.5 rounded-lg px-3 py-2 text-[0.8rem] font-medium transition-colors duration-150',
+                isActive
+                  ? 'bg-primary/10 text-primary font-semibold'
+                  : 'text-muted-foreground hover:bg-surface-container-low/60 hover:text-foreground'
+              )}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {tab.label}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Row 3: Sub-tabs + controls (context-aware) */}
+      {activeMainTab === 'strategy' ? <StrategyHeaderBar /> : activeMainTab === 'dashboard' ? <DashboardHeaderBar /> : null}
     </div>
   );
 }

@@ -33,7 +33,7 @@ export const LANDING_CARDS: LandingCardData[] = [
     subtitle: 'CIP planning, kanban boards, and project timelines',
     badge: 'myATHENA',
     icon: Target,
-    href: '/dashboard?tab=strategy',
+    href: '/strategy',
   },
   {
     id: 'chat',
@@ -41,6 +41,6 @@ export const LANDING_CARDS: LandingCardData[] = [
     subtitle: 'Ask about internal documents and data in natural language',
     badge: 'myBOT',
     icon: MessagesSquare,
-    href: '/chat',
+    href: '/aichat',
   },
 ];

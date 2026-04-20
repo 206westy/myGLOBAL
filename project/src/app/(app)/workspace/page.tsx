@@ -2,6 +2,6 @@
 
 import { PlaceholderPage } from '@/features/dashboard/components/placeholder/placeholder-page';
 
-export default function BoardRoute() {
-  return <PlaceholderPage name="Board" />;
+export default function WorkspaceRoute() {
+  return <PlaceholderPage name="Workspace" />;
 }

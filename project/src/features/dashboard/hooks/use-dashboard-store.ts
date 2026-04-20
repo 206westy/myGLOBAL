@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 
-export type MainTab = 'dashboard' | 'ai-chat' | 'agents' | 'strategy' | 'board';
+export type MainTab = 'dashboard' | 'workspace' | 'strategy' | 'aichat';
 export type SubTab = 'overview' | 'live' | 'forecast';
 export type SidebarItem =
   | 'overview'

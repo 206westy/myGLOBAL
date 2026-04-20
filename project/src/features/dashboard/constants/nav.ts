@@ -3,7 +3,6 @@ import {
   MessagesSquare,
   Workflow,
   Target,
-  LayoutGrid,
   FilePlus2,
   Wrench,
   Settings2,
@@ -33,11 +32,10 @@ export interface SidebarItemDef {
 }
 
 export const MAIN_TABS: MainTabDef[] = [
-  { id: 'dashboard', label: 'Dashboard',  icon: LayoutDashboard },
-  { id: 'ai-chat',   label: 'AI Chat',    icon: MessagesSquare },
-  { id: 'agents',    label: 'Agents',     icon: Workflow },
-  { id: 'strategy',  label: 'Strategy',   icon: Target },
-  { id: 'board',     label: 'Board',      icon: LayoutGrid },
+  { id: 'dashboard',  label: 'Dashboard',  icon: LayoutDashboard },
+  { id: 'workspace',  label: 'Workspace',  icon: Workflow },
+  { id: 'strategy',   label: 'Strategy',   icon: Target },
+  { id: 'aichat',     label: 'AI Chat',    icon: MessagesSquare },
 ];
 
 export const SIDEBAR_ITEMS: SidebarItemDef[] = [
@@ -59,11 +57,10 @@ export const SIDEBAR_FOOTER_ITEMS = [
 ];
 
 export const MAIN_TAB_LABELS: Record<MainTab, string> = {
-  'dashboard': 'Dashboard',
-  'ai-chat':   'AI Chat',
-  'agents':    'Agents',
-  'strategy':  'Strategy',
-  'board':     'Board',
+  'dashboard':  'Dashboard',
+  'workspace':  'Workspace',
+  'strategy':   'Strategy',
+  'aichat':     'AI Chat',
 };
 
 export const SIDEBAR_LABELS: Record<SidebarItem, string> = {

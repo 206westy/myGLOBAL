@@ -15,18 +15,16 @@ const KPI_GROUPS = [
 ] as const;
 
 const TAB_ROUTES: Record<MainTab, string> = {
-  dashboard: '/dashboard',
-  'ai-chat': '/ai-chat',
-  agents:    '/agents',
-  strategy:  '/strategy',
-  board:     '/board',
+  dashboard:  '/dashboard',
+  workspace:  '/workspace',
+  strategy:   '/strategy',
+  aichat:     '/aichat',
 };
 
 function getActiveMainTab(pathname: string): MainTab {
-  if (pathname.startsWith('/strategy')) return 'strategy';
-  if (pathname.startsWith('/ai-chat'))  return 'ai-chat';
-  if (pathname.startsWith('/agents'))   return 'agents';
-  if (pathname.startsWith('/board'))    return 'board';
+  if (pathname.startsWith('/strategy'))  return 'strategy';
+  if (pathname.startsWith('/workspace')) return 'workspace';
+  if (pathname.startsWith('/aichat'))    return 'aichat';
   return 'dashboard';
 }
 
