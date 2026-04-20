@@ -1,11 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, Settings, HelpCircle, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useDashboardStore, type MainTab } from '../../hooks/use-dashboard-store';
-import { SIDEBAR_ITEMS, MAIN_TABS } from '../../constants/nav';
+import { useDashboardStore } from '../../hooks/use-dashboard-store';
+import { SIDEBAR_ITEMS } from '../../constants/nav';
 import { MyGlobalMark } from '../shared/my-global-mark';
 
 const KPI_GROUPS = [
@@ -14,23 +13,9 @@ const KPI_GROUPS = [
   { key: 'forecast',     label: 'Forecast'      },
 ] as const;
 
-const TAB_ROUTES: Record<MainTab, string> = {
-  dashboard:  '/dashboard',
-  workspace:  '/workspace',
-  strategy:   '/strategy',
-  aichat:     '/aichat',
-};
-
-function getActiveMainTab(pathname: string): MainTab {
-  if (pathname.startsWith('/strategy'))  return 'strategy';
-  if (pathname.startsWith('/workspace')) return 'workspace';
-  if (pathname.startsWith('/aichat'))    return 'aichat';
-  return 'dashboard';
-}
-
 export function Sidebar() {
   const pathname = usePathname();
-  const activeMainTab = getActiveMainTab(pathname);
+  const isDashboard = pathname.startsWith('/dashboard') || pathname === '/';
   const { activeSidebarItem, setSidebarItem } = useDashboardStore();
 
   return (
@@ -66,32 +51,8 @@ export function Sidebar() {
 
       {/* Scrollable nav section */}
       <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
-        {/* Main Menu — app-level navigation */}
-        <p className="px-3 pb-1 pt-1 text-[0.63rem] font-semibold uppercase tracking-wider text-muted-foreground">
-          Main Menu
-        </p>
-        {MAIN_TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeMainTab === tab.id;
-          return (
-            <Link
-              key={tab.id}
-              href={TAB_ROUTES[tab.id]}
-              className={cn(
-                'flex h-9 w-full items-center gap-2.5 rounded-lg px-3 transition-colors duration-150',
-                isActive
-                  ? 'bg-primary text-primary-foreground font-semibold'
-                  : 'text-muted-foreground hover:bg-surface-container-low hover:text-foreground'
-              )}
-            >
-              <Icon className="h-3.5 w-3.5 shrink-0" />
-              <span className="text-[0.82rem]">{tab.label}</span>
-            </Link>
-          );
-        })}
-
         {/* KPI sub-groups — only when Dashboard is active */}
-        {activeMainTab === 'dashboard' && (
+        {isDashboard && (
           <div className="mt-2 space-y-1 border-t border-outline-variant/20 pt-3">
             {KPI_GROUPS.map((group) => {
               const items = SIDEBAR_ITEMS.filter((i) => i.group === group.key);
