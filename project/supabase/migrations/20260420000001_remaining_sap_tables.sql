@@ -230,6 +230,9 @@ begin
   for row_data in select * from jsonb_array_elements(p_rows)
   loop
     row_idx := row_idx + 1;
+    if nullif(trim(row_data->>'customer_line_code'), '') is null then
+      continue;
+    end if;
     begin
       insert into branches (
         customer_line_code, customer_line_name, office, country_code
