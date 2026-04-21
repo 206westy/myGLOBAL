@@ -431,15 +431,15 @@ erDiagram
     }
 
     so_descriptions {
-        text order_no PK_FK
-        text description
+        text order_no PK
+        text desc_text
     }
 
     so_description_hints {
         uuid id PK
         text order_no FK
         text hint_type "enum"
-        text description
+        text desc_text
     }
 
     users {
