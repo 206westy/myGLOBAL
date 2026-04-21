@@ -9,10 +9,15 @@ interface CsvUploaderProps {
 
 const PRESET_FILES = [
   { label: "ZCSR0010.csv (장비마스터)", path: "Database/SAP/ZCSR0010.csv" },
-  { label: "ZCSR0070D.csv (서비스오더)", path: "Database/SAP/ZCSR0070D.csv" },
+  { label: "ZCSR0070D_INSTALL.csv (셋업오더)", path: "Database/SAP/ZCSR0070D_INSTALL.csv" },
+  { label: "ZCSR0070D_MAINT.csv (서비스오더)", path: "Database/SAP/ZCSR0070D_MAINT.csv" },
   { label: "ZCSR0140D.csv (태스크상세)", path: "Database/SAP/ZCSR0140D.csv" },
   { label: "ZCSR0100.csv (파트사용이력)", path: "Database/SAP/ZCSR0100.csv" },
   { label: "ZCSR0150.csv (월별가동이력)", path: "Database/SAP/ZCSR0150.csv" },
+  { label: "ZCSR0210.csv (인원마스터)", path: "Database/SAP/ZCSR0210.csv" },
+  { label: "ZSDR0030D.csv (해외FCST)", path: "Database/SAP/ZSDR0030D.csv" },
+  { label: "ZSDR0040D.csv (국내FCST)", path: "Database/SAP/ZSDR0040D.csv" },
+  { label: "branch.csv (브랜치)", path: "Database/SAP/branch.csv" },
 ]
 
 export function CsvUploader({ onFileReady, disabled }: CsvUploaderProps) {
