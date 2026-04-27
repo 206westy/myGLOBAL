@@ -94,6 +94,8 @@ const MOCK_CIP_ITEM: CipItem = {
   detected_at: '2026-04-01T09:00:00Z',
   registered_at: '2026-04-02T10:30:00Z',
   resolved_at: null,
+  ai_recommendation: null,
+  sla_deadline: null,
 };
 
 interface CipDetailPageProps {
