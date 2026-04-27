@@ -194,7 +194,10 @@ export async function POST(request: Request) {
 
         // Phase 5: Refresh MVs
         send({ type: "phase", phase: "refreshing_views" })
-        await supabase.rpc("refresh_all_materialized_views")
+        const { error: refreshError } = await supabase.rpc("refresh_all_materialized_views")
+        if (refreshError) {
+          console.error("[import] refresh_all_materialized_views failed:", refreshError)
+        }
 
         // Phase 6: Log import
         const durationMs = Date.now() - startTime

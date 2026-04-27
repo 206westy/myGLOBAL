@@ -152,10 +152,18 @@ export function ScreeningView() {
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || 'Screening failed');
-      toast({
-        title: '스크리닝 완료',
-        description: `${data.processed}개 조합 분석, Alert ${data.alerts ?? 0}건, Watch ${data.watches ?? 0}건`,
-      });
+      if (data.diagnostic?.mvEmpty) {
+        toast({
+          title: '스크리닝 결과 없음',
+          description: data.diagnostic.hint ?? '집계 대상 데이터가 없습니다.',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: '스크리닝 완료',
+          description: `${data.processed}개 조합 분석, Alert ${data.alerts ?? 0}건, Watch ${data.watches ?? 0}건`,
+        });
+      }
       refetch();
     } catch (err) {
       toast({

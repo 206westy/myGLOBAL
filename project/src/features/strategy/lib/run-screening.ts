@@ -50,7 +50,23 @@ export async function runScreening(targetYearMonth: string) {
   const mvData = allMvData;
   console.log(`[screening] MV data fetched: ${mvData.length} rows`);
 
-  if (!mvData || mvData.length === 0) return { processed: 0, results: [] };
+  if (!mvData || mvData.length === 0) {
+    const { count: soTotal } = await supabase
+      .from('service_orders')
+      .select('*', { count: 'exact', head: true });
+    const hint = (soTotal ?? 0) === 0
+      ? 'service_orders가 비어있습니다. SAP CSV를 임포트하세요.'
+      : 'mv_monthly_part_stats가 비어있습니다. service_orders에 데이터는 있으나 work_start_date 또는 part_group_code가 모두 NULL이거나 MV refresh가 실패했을 수 있습니다.';
+    return {
+      processed: 0,
+      results: [],
+      diagnostic: {
+        mvEmpty: true,
+        serviceOrdersCount: soTotal ?? 0,
+        hint,
+      },
+    };
+  }
 
   // 2. Group by (model x line x part_group)
   const groups = new Map<string, ScreeningInput>();

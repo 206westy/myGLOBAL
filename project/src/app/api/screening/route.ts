@@ -13,6 +13,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // MV가 stale일 가능성에 대비해 스크리닝 직전에 refresh.
+    // refresh가 실패하면 runScreening 내부에서 빈 MV 케이스를 진단 응답으로 처리한다.
+    const supabase = createServiceClient();
+    const { error: refreshError } = await supabase.rpc('refresh_all_materialized_views');
+    if (refreshError) {
+      console.warn('[screening] MV refresh failed (continuing):', refreshError.message);
+    }
+
     const result = await runScreening(yearMonth);
 
     return NextResponse.json(result);
