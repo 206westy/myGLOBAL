@@ -192,11 +192,23 @@ export function ScreeningView({ readOnly = false }: ScreeningViewProps = {}) {
       initial="hidden"
       animate="show"
     >
+      {/* Read-only banner */}
+      {readOnly && (
+        <motion.div
+          variants={sectionVariants}
+          className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200"
+        >
+          <span className="font-semibold">Read-only archive.</span>{' '}
+          For new processing, go to the <span className="font-semibold">Detect</span> tab in the
+          main workflow.
+        </motion.div>
+      )}
+
       {/* Header: 월 선택 + 스크리닝 실행 */}
       <motion.div variants={sectionVariants} className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="font-headline text-base font-bold tracking-tight">
-            월간 스크리닝
+            Monthly screening
           </h2>
           <input
             type="month"
@@ -303,8 +315,8 @@ export function ScreeningView({ readOnly = false }: ScreeningViewProps = {}) {
                       trendData={generateTrendData(result)}
                       resolveName={resolveName}
                       onClick={() => handleOpenDetail(result)}
-                      onCreateCip={() => handleCreateCip(result)}
-                      onKeepWatch={() => handleKeepWatch(result)}
+                      onCreateCip={readOnly ? undefined : () => handleCreateCip(result)}
+                      onKeepWatch={readOnly ? undefined : () => handleKeepWatch(result)}
                     />
                   </motion.div>
                 ))}
