@@ -12,6 +12,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useDecideOnCard } from '../../hooks/use-cip-queries';
 import { toast } from '@/hooks/use-toast';
+import { DecisionPreviewTooltip } from './decision-preview-tooltip';
 import type { DecisionAction, DecisionOption } from '../../lib/workflow-types';
 
 function actionRequiresReason(action: DecisionAction): boolean {
@@ -70,9 +71,8 @@ export function DecisionButtons({
       <div className="flex flex-wrap gap-2">
         {options.map((opt, i) => {
           const isPrimary = opt.isPrimary || (recommendedAction && opt.action.kind === recommendedAction);
-          return (
+          const button = (
             <Button
-              key={i}
               variant={isPrimary ? 'default' : (opt.variant ?? 'outline')}
               size="sm"
               onClick={() => onClick(opt)}
@@ -80,6 +80,13 @@ export function DecisionButtons({
             >
               {opt.label}
             </Button>
+          );
+          return isPrimary ? (
+            <DecisionPreviewTooltip key={i} action={opt.action}>
+              {button}
+            </DecisionPreviewTooltip>
+          ) : (
+            <span key={i}>{button}</span>
           );
         })}
       </div>
