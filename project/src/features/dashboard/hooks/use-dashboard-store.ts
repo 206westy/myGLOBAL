@@ -16,7 +16,7 @@ export type SidebarItem =
   | 'live-monitoring'
   | 'forecast-trend';
 export type Period = 'monthly' | 'quarterly' | 'yearly';
-export type StrategyView = 'screening' | 'kanban' | 'gantt';
+export type StrategyView = 'workflow' | 'kanban' | 'gantt' | 'screening-archive';
 export type DetailTab = 'chart' | 'detail' | 'raw-data';
 
 interface DashboardStore {
@@ -40,7 +40,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
   activeSidebarItem: 'overview',
   activeDetailTab: 'chart',
   period: 'monthly',
-  activeStrategyView: 'screening',
+  activeStrategyView: 'workflow',
   setMainTab: (t) => set({ activeMainTab: t }),
   setSubTab: (t) => set({ activeSubTab: t }),
   setSidebarItem: (i) => set({ activeSidebarItem: i, activeDetailTab: 'chart' }),
