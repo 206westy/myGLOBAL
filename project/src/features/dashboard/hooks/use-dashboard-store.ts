@@ -26,12 +26,15 @@ interface DashboardStore {
   activeDetailTab: DetailTab;
   period: Period;
   activeStrategyView: StrategyView;
+  sidebarCollapsed: boolean;
   setMainTab: (t: MainTab) => void;
   setSubTab: (t: SubTab) => void;
   setSidebarItem: (i: SidebarItem) => void;
   setDetailTab: (t: DetailTab) => void;
   setPeriod: (p: Period) => void;
   setStrategyView: (v: StrategyView) => void;
+  setSidebarCollapsed: (c: boolean) => void;
+  toggleSidebar: () => void;
 }
 
 export const useDashboardStore = create<DashboardStore>((set) => ({
@@ -41,10 +44,13 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
   activeDetailTab: 'chart',
   period: 'monthly',
   activeStrategyView: 'screening',
+  sidebarCollapsed: false,
   setMainTab: (t) => set({ activeMainTab: t }),
   setSubTab: (t) => set({ activeSubTab: t }),
   setSidebarItem: (i) => set({ activeSidebarItem: i, activeDetailTab: 'chart' }),
   setDetailTab: (t) => set({ activeDetailTab: t }),
   setPeriod: (p) => set({ period: p }),
   setStrategyView: (v) => set({ activeStrategyView: v }),
+  setSidebarCollapsed: (c) => set({ sidebarCollapsed: c }),
+  toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
 }));
