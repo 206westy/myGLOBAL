@@ -7,6 +7,10 @@ import type {
   QueueCounts,
   WorkflowTabKey,
   DecisionAction,
+  EvidencePoint,
+  EvidenceStats,
+  TimelineEntry,
+  CardComment,
 } from './lib/workflow-types';
 
 // ── Screening ──
@@ -300,4 +304,96 @@ export async function decideOnCard(action: DecisionAction): Promise<{ ok: true }
       return { ok: true };
     }
   }
+}
+
+// ── PRD v3.2 additions ──
+
+export async function fetchEvidence12Month(
+  modelCode: string,
+  customerLineCode: string,
+  partGroupCode: string,
+): Promise<EvidencePoint[]> {
+  const { data, error } = await supabase.rpc('get_evidence_12month', {
+    p_model_code: modelCode,
+    p_customer_line_code: customerLineCode,
+    p_part_group_code: partGroupCode,
+  });
+  if (error) throw error;
+  return ((data ?? []) as EvidencePoint[]).map((p) => ({
+    ...p,
+    call_count: Number(p.call_count),
+    rework_count: Number(p.rework_count),
+    cumulative_work_min: Number(p.cumulative_work_min),
+  }));
+}
+
+export function deriveEvidenceStats(
+  points: EvidencePoint[],
+  meta: Record<string, unknown>,
+): EvidenceStats {
+  const callsArr = points.map((p) => p.call_count);
+  const callsAvg = callsArr.length > 0
+    ? callsArr.reduce((s, v) => s + v, 0) / callsArr.length
+    : 0;
+  const current = points.find((p) => p.is_current);
+  const callsThisMonth = current?.call_count ?? 0;
+  const callsChangePct = callsAvg > 0
+    ? ((callsThisMonth - callsAvg) / callsAvg) * 100
+    : 0;
+  const cusumValue = (meta.cusum_value as number | null) ?? null;
+  const cusumUcl = (meta.cusum_ucl as number | null) ?? null;
+  const cusumMultiplier = cusumValue !== null && cusumUcl !== null && cusumUcl > 0
+    ? cusumValue / cusumUcl
+    : null;
+  const affected = (meta.affected_equip_count as number | null) ?? null;
+  const total = (meta.total_equip_count as number | null) ?? null;
+  const affectedRatio = affected !== null && total !== null && total > 0
+    ? (affected / total) * 100
+    : null;
+  const trendSlope = (meta.trend_slope as number | null) ?? null;
+  const trendPValue = (meta.trend_p_value as number | null) ?? null;
+  return {
+    callsThisMonth,
+    callsAvg,
+    callsChangePct,
+    cusumValue,
+    cusumUcl,
+    cusumMultiplier,
+    affectedRatio,
+    modelAvgAffectedRatio: null,
+    trendSlope,
+    trendPValue,
+    trendIsSignificant: trendPValue !== null && trendPValue < 0.1,
+  };
+}
+
+export async function fetchCipTimeline(cipId: string): Promise<TimelineEntry[]> {
+  const { data, error } = await supabase.rpc('get_cip_timeline', { p_cip_id: cipId });
+  if (error) throw error;
+  return (data ?? []) as TimelineEntry[];
+}
+
+export async function fetchCipComments(cipId: string): Promise<CardComment[]> {
+  const { data, error } = await supabase
+    .from('cip_comments')
+    .select('*')
+    .eq('cip_id', cipId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as CardComment[];
+}
+
+export async function addCipComment(
+  cipId: string,
+  content: string,
+  commentType: string = 'note',
+  createdBy: string | null = null,
+): Promise<CardComment> {
+  const { data, error } = await supabase
+    .from('cip_comments')
+    .insert({ cip_id: cipId, content, comment_type: commentType, created_by: createdBy })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as CardComment;
 }

@@ -14,6 +14,10 @@ import {
   fetchActionQueue,
   fetchQueueCounts,
   decideOnCard,
+  fetchEvidence12Month,
+  fetchCipTimeline,
+  fetchCipComments,
+  addCipComment,
   type LookupMap,
 } from '../api';
 import type { CipItem } from '../lib/types';
@@ -126,6 +130,51 @@ export function useDecideOnCard() {
       queryClient.invalidateQueries({ queryKey: ['action-queue-counts'] });
       queryClient.invalidateQueries({ queryKey: ['cip-items'] });
       queryClient.invalidateQueries({ queryKey: ['screening'] });
+    },
+  });
+}
+
+// ── PRD v3.2 additions ──
+
+export function useEvidence12Month(modelCode?: string, customerLineCode?: string, partGroupCode?: string) {
+  return useQuery({
+    queryKey: ['evidence-12m', modelCode, customerLineCode, partGroupCode],
+    queryFn: () => fetchEvidence12Month(modelCode!, customerLineCode!, partGroupCode!),
+    enabled: !!(modelCode && customerLineCode && partGroupCode),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useCipTimeline(cipId?: string) {
+  return useQuery({
+    queryKey: ['cip-timeline', cipId],
+    queryFn: () => fetchCipTimeline(cipId!),
+    enabled: !!cipId,
+    staleTime: 30_000,
+  });
+}
+
+export function useCipComments(cipId?: string) {
+  return useQuery({
+    queryKey: ['cip-comments', cipId],
+    queryFn: () => fetchCipComments(cipId!),
+    enabled: !!cipId,
+    staleTime: 30_000,
+  });
+}
+
+export function useAddCipComment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ cipId, content, commentType, createdBy }: {
+      cipId: string;
+      content: string;
+      commentType?: string;
+      createdBy?: string | null;
+    }) => addCipComment(cipId, content, commentType ?? 'note', createdBy ?? null),
+    onSuccess: (_, { cipId }) => {
+      queryClient.invalidateQueries({ queryKey: ['cip-comments', cipId] });
+      queryClient.invalidateQueries({ queryKey: ['cip-timeline', cipId] });
     },
   });
 }
