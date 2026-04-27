@@ -23,7 +23,7 @@ export function WorkflowHeaderBar() {
   const { data: counts } = useQueueCounts();
 
   return (
-    <div className="flex h-12 items-center gap-1 border-b border-border bg-background px-4">
+    <div className="flex h-11 items-center gap-1 border-b border-outline-variant/30 bg-card px-4">
       {WORKFLOW_TABS.map(({ key, label, steps }) => {
         const Icon = TAB_ICON[key];
         const tabCount = counts?.find((c) => c.tab === key);

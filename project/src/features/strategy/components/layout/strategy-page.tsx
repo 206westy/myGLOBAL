@@ -25,8 +25,11 @@ export function StrategyPage() {
     view = <CipKanbanView />;
   } else if (activeStrategyView === 'gantt') {
     view = <GanttView />;
-  } else {
+  } else if (activeStrategyView === 'screening-archive') {
     view = <ScreeningView readOnly />;
+  } else {
+    // 'screening-run' — admin mode, action buttons enabled
+    view = <ScreeningView />;
   }
 
   return (

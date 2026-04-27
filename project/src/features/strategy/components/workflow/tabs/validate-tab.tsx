@@ -73,6 +73,7 @@ export function ValidateTab() {
         icon={<Clipboard className="h-4 w-4 text-muted-foreground" />}
         rows={reference}
         buildOptions={buildValidateOptions}
+        collapsedByDefault
       />
     </div>
   );
