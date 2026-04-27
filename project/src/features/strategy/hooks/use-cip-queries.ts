@@ -11,9 +11,13 @@ import {
   updateCipStage,
   fetchMonthlyPartStats,
   fetchLookupMaps,
+  fetchActionQueue,
+  fetchQueueCounts,
+  decideOnCard,
   type LookupMap,
 } from '../api';
 import type { CipItem } from '../lib/types';
+import type { WorkflowTabKey, DecisionAction } from '../lib/workflow-types';
 
 export function useScreeningResults(yearMonth: string) {
   return useQuery({
@@ -91,5 +95,37 @@ export function useMonthlyPartStats(modelCode?: string, partGroupCode?: string) 
   return useQuery({
     queryKey: ['monthly-part-stats', modelCode, partGroupCode],
     queryFn: () => fetchMonthlyPartStats(modelCode, partGroupCode),
+  });
+}
+
+// ── Action Queue (6-tab workflow) ──
+
+export function useActionQueue(tab: WorkflowTabKey) {
+  return useQuery({
+    queryKey: ['action-queue', tab],
+    queryFn: () => fetchActionQueue(tab),
+    staleTime: 30_000,
+  });
+}
+
+export function useQueueCounts() {
+  return useQuery({
+    queryKey: ['action-queue-counts'],
+    queryFn: fetchQueueCounts,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+}
+
+export function useDecideOnCard() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (action: DecisionAction) => decideOnCard(action),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['action-queue'] });
+      queryClient.invalidateQueries({ queryKey: ['action-queue-counts'] });
+      queryClient.invalidateQueries({ queryKey: ['cip-items'] });
+      queryClient.invalidateQueries({ queryKey: ['screening'] });
+    },
   });
 }
