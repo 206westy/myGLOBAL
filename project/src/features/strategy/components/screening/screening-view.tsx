@@ -61,7 +61,11 @@ const cardItem = {
   show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.3 } },
 };
 
-export function ScreeningView() {
+interface ScreeningViewProps {
+  readOnly?: boolean;
+}
+
+export function ScreeningView({ readOnly = false }: ScreeningViewProps = {}) {
   const alertSectionRef = useRef<HTMLDivElement>(null);
   const watchSectionRef = useRef<HTMLDivElement>(null);
 
