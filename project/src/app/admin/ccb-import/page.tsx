@@ -113,15 +113,15 @@ export default function CcbImportPage() {
         <div
           className={
             result.error
-              ? 'rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900 dark:bg-rose-950/30 dark:text-rose-200'
-              : 'rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200'
+              ? 'rounded-2xl border border-rose-200/60 bg-rose-50/60 p-4 text-sm text-rose-900 dark:bg-rose-950/20 dark:text-rose-200'
+              : 'rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm text-foreground'
           }
         >
           <div className="mb-2 flex items-center gap-2">
             {result.error ? (
-              <AlertTriangle className="h-4 w-4" />
+              <AlertTriangle className="h-4 w-4 text-rose-600" />
             ) : (
-              <CheckCircle2 className="h-4 w-4" />
+              <CheckCircle2 className="h-4 w-4 text-primary" />
             )}
             <span className="font-headline font-semibold">
               {result.error ? 'Import failed' : 'Import complete'}
