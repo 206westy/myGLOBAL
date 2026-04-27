@@ -48,7 +48,7 @@ export function ActionQueueSection({
       </button>
 
       {expanded && (
-        <div className="grid gap-3 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+        <div className="space-y-3">
           {rows.map((row) => (
             <ActionCard key={row.card_id} row={row} decisionOptions={buildOptions(row)} />
           ))}
