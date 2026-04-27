@@ -5,6 +5,7 @@ import { SIDEBAR_LABELS } from '../../constants/nav';
 import { OverviewPage }      from '../overview/overview-page';
 import { MaintReworkPage }   from '../rework/maint-rework-page';
 import { PlaceholderPage }   from '../placeholder/placeholder-page';
+import { WorkloadPage }      from '@/features/workload-dashboard/components/workload-page';
 
 export function ContentRouter() {
   const { activeSubTab, activeSidebarItem } = useDashboardStore();
@@ -21,6 +22,9 @@ export function ContentRouter() {
   }
   if (activeSidebarItem === 'maint-rework') {
     return <MaintReworkPage />;
+  }
+  if (activeSidebarItem === 'workload') {
+    return <WorkloadPage />;
   }
 
   return <PlaceholderPage name={SIDEBAR_LABELS[activeSidebarItem]} />;
