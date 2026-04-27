@@ -7,6 +7,9 @@ import { GanttView } from '../gantt/gantt-view';
 import { ScreeningView } from '../screening/screening-view';
 import { WorkflowHeaderBar } from '../workflow/workflow-header-bar';
 import { WorkflowTabContent } from '../workflow/workflow-tab-content';
+import { CipRoiPanel } from '../intelligence/cip-roi-panel';
+import { EquipmentHealthPanel } from '../intelligence/equipment-health-panel';
+import { EffectivenessPanel } from '../intelligence/effectiveness-panel';
 
 export function StrategyPage() {
   const activeStrategyView = useDashboardStore((s) => s.activeStrategyView);
@@ -27,9 +30,15 @@ export function StrategyPage() {
     view = <GanttView />;
   } else if (activeStrategyView === 'screening-archive') {
     view = <ScreeningView readOnly />;
-  } else {
-    // 'screening-run' — admin mode, action buttons enabled
+  } else if (activeStrategyView === 'screening-run') {
     view = <ScreeningView />;
+  } else if (activeStrategyView === 'intel-roi') {
+    view = <CipRoiPanel />;
+  } else if (activeStrategyView === 'intel-health') {
+    view = <EquipmentHealthPanel />;
+  } else {
+    // 'intel-effectiveness'
+    view = <EffectivenessPanel />;
   }
 
   return (

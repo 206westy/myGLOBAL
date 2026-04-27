@@ -31,9 +31,9 @@ interface StrategySidebarItem {
 }
 
 const STRATEGY_INTELLIGENCE: StrategySidebarItem[] = [
-  { key: 'cip-roi',       label: 'CIP ROI',              icon: BarChart3, disabled: true },
-  { key: 'equip-health',  label: 'Equipment health',     icon: Activity,  disabled: true },
-  { key: 'effectiveness', label: 'Effectiveness',        icon: LineChart, disabled: true },
+  { key: 'cip-roi',       label: 'CIP ROI',          icon: BarChart3, view: 'intel-roi' },
+  { key: 'equip-health',  label: 'Equipment health', icon: Activity,  view: 'intel-health' },
+  { key: 'effectiveness', label: 'Effectiveness',    icon: LineChart, view: 'intel-effectiveness' },
 ];
 
 const STRATEGY_AUX: StrategySidebarItem[] = [
