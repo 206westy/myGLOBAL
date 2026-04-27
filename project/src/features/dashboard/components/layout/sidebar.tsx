@@ -7,7 +7,7 @@ import {
   Search, Settings, HelpCircle, ChevronLeft,
   BarChart3, Activity, LineChart,
   Columns3, CalendarRange, ScanSearch,
-  Upload, Play, Database, Users,
+  Upload, Play, Database, Users, Sparkles,
   ArrowLeft,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -46,6 +46,7 @@ const STRATEGY_SETTINGS: StrategySidebarItem[] = [
   { key: 'import',     label: 'CSV Import (SAP)',  icon: Upload,   href: '/admin/import' },
   { key: 'ccb-import', label: 'CCB JSONL Import',  icon: Upload,   href: '/admin/ccb-import' },
   { key: 'run',        label: 'Run screening',     icon: Play,     view: 'screening-run' },
+  { key: 'ai-tools',   label: 'AI Tools',          icon: Sparkles, href: '/admin/ai-tools' },
   { key: 'lookups',    label: 'Lookup tables',     icon: Database, disabled: true },
   { key: 'users',      label: 'Users / Roles',     icon: Users,    disabled: true },
 ];
