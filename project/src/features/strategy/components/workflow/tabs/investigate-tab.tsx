@@ -73,6 +73,7 @@ export function InvestigateTab() {
         icon={<Hourglass className="h-4 w-4 text-muted-foreground" />}
         rows={reference}
         buildOptions={() => []}
+        collapsedByDefault
       />
     </div>
   );

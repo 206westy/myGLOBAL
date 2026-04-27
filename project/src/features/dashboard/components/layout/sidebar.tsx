@@ -44,7 +44,7 @@ const STRATEGY_AUX: StrategySidebarItem[] = [
 
 const STRATEGY_SETTINGS: StrategySidebarItem[] = [
   { key: 'import',  label: 'CSV Import',     icon: Upload,   href: '/admin/import' },
-  { key: 'run',     label: 'Run screening',  icon: Play,     disabled: true },
+  { key: 'run',     label: 'Run screening',  icon: Play,     view: 'screening-run' },
   { key: 'lookups', label: 'Lookup tables',  icon: Database, disabled: true },
   { key: 'users',   label: 'Users / Roles',  icon: Users,    disabled: true },
 ];

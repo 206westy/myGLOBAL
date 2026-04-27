@@ -16,7 +16,7 @@ export type SidebarItem =
   | 'live-monitoring'
   | 'forecast-trend';
 export type Period = 'monthly' | 'quarterly' | 'yearly';
-export type StrategyView = 'workflow' | 'kanban' | 'gantt' | 'screening-archive';
+export type StrategyView = 'workflow' | 'kanban' | 'gantt' | 'screening-archive' | 'screening-run';
 export type DetailTab = 'chart' | 'detail' | 'raw-data';
 
 interface DashboardStore {

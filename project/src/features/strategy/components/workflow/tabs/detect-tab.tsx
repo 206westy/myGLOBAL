@@ -78,6 +78,7 @@ export function DetectTab() {
         icon={<FileText className="h-4 w-4 text-muted-foreground" />}
         rows={reference}
         buildOptions={buildDetectOptions}
+        collapsedByDefault
       />
     </div>
   );

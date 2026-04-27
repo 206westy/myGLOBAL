@@ -29,9 +29,11 @@ export function ActionCard({
   return (
     <div
       className={cn(
-        'rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md',
-        row.priority === 'HIGH' && 'border-l-4 border-l-red-500',
-        isOverdue && 'bg-red-50 dark:bg-red-950/20',
+        'rounded-2xl border border-outline-variant/30 bg-card p-5',
+        'shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-200',
+        'hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]',
+        row.priority === 'HIGH' && 'border-l-4 border-l-rose-500',
+        isOverdue && 'border-l-4 border-l-rose-500 bg-rose-50/50 dark:bg-rose-950/20',
       )}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
@@ -59,7 +61,9 @@ export function ActionCard({
         )}
       </div>
 
-      <h3 className="mb-1 line-clamp-2 text-sm font-semibold">{row.title}</h3>
+      <h3 className="mb-1 line-clamp-2 font-headline text-sm font-semibold tracking-tight">
+        {row.title}
+      </h3>
       <p className="mb-3 text-xs text-muted-foreground">{row.context_line}</p>
 
       <div className="mb-3">
