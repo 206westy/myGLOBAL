@@ -2,6 +2,12 @@
 
 import { supabase } from '@/lib/supabase/client';
 import type { ScreeningResult, CipItem, MonthlyPartStat, DescriptionHint } from './lib/types';
+import type {
+  ActionQueueRow,
+  QueueCounts,
+  WorkflowTabKey,
+  DecisionAction,
+} from './lib/workflow-types';
 
 // ── Screening ──
 
@@ -135,4 +141,163 @@ export async function fetchDescriptionHints(orderNos: string[]) {
     .in('order_no', orderNos);
   if (error) throw error;
   return data as DescriptionHint[];
+}
+
+// ── Action Queue (6-tab workflow) ──
+
+const URGENCY_RANK: Record<string, number> = { URGENT: 0, NORMAL: 1, REFERENCE: 2 };
+
+export async function fetchActionQueue(tab: WorkflowTabKey): Promise<ActionQueueRow[]> {
+  const { data, error } = await supabase
+    .from('v_action_queue')
+    .select('*')
+    .eq('tab', tab)
+    .order('created_at', { ascending: false })
+    .limit(200);
+  if (error) throw error;
+  // urgency_group sort done client-side (URGENT first)
+  return ((data ?? []) as ActionQueueRow[]).sort(
+    (a, b) => (URGENCY_RANK[a.urgency_group] ?? 9) - (URGENCY_RANK[b.urgency_group] ?? 9),
+  );
+}
+
+export async function fetchQueueCounts(): Promise<QueueCounts[]> {
+  const { data, error } = await supabase.from('v_action_queue_counts').select('*');
+  if (error) throw error;
+  return (data ?? []) as QueueCounts[];
+}
+
+export async function decideOnCard(action: DecisionAction): Promise<{ ok: true }> {
+  switch (action.kind) {
+    case 'create_cip': {
+      const { data: sr, error: srErr } = await supabase
+        .from('screening_results')
+        .select('*')
+        .eq('id', action.screeningId)
+        .single();
+      if (srErr || !sr) throw srErr ?? new Error('screening not found');
+
+      const { error: insertErr } = await supabase.from('cip_items').insert({
+        stage: 'registered',
+        journey_type: 'A',
+        screening_result_id: sr.id,
+        model_code: sr.model_code,
+        customer_line_code: sr.customer_line_code,
+        target_part_group: sr.part_group_code,
+        title: `${sr.model_code} / ${sr.part_group_code} anomaly`,
+        symptom: action.reason ?? sr.watch_reason ?? null,
+        action_priority: sr.status === 'alert' ? 'HIGH' : 'MEDIUM',
+        anomaly_score: sr.cusum_value,
+        anomaly_detail: { source: 'screening', screening_id: sr.id },
+        registered_at: new Date().toISOString(),
+      });
+      if (insertErr) throw insertErr;
+      return { ok: true };
+    }
+
+    case 'keep_watch': {
+      const { error } = await supabase
+        .from('screening_results')
+        .update({ watch_reason: action.reason })
+        .eq('id', action.screeningId);
+      if (error) throw error;
+      return { ok: true };
+    }
+
+    case 'dismiss_screening': {
+      const { error } = await supabase
+        .from('screening_results')
+        .update({ status: 'resolved', watch_reason: `[dismissed] ${action.reason}` })
+        .eq('id', action.screeningId);
+      if (error) throw error;
+      return { ok: true };
+    }
+
+    case 'advance_to_solve': {
+      const item = await fetchCipItem(action.cipId);
+      const { error: e1 } = await supabase
+        .from('cip_items')
+        .update({
+          stage: 'searching_solution',
+          investigation_completed_at: new Date().toISOString(),
+        })
+        .eq('id', action.cipId);
+      if (e1) throw e1;
+      await supabase.from('cip_stage_history').insert({
+        cip_id: action.cipId,
+        from_stage: item.stage,
+        to_stage: 'searching_solution',
+        reason: 'Advanced from Investigate tab',
+      });
+      return { ok: true };
+    }
+
+    case 'request_more_investigation': {
+      const { error } = await supabase.from('cip_comments').insert({
+        cip_id: action.cipId,
+        comment_type: 'system',
+        content: `[More investigation requested] ${action.reason}`,
+      });
+      if (error) throw error;
+      return { ok: true };
+    }
+
+    case 'reject_investigation': {
+      const item = await fetchCipItem(action.cipId);
+      const { error: e1 } = await supabase
+        .from('cip_items')
+        .update({ stage: 'cancelled', resolved_at: new Date().toISOString() })
+        .eq('id', action.cipId);
+      if (e1) throw e1;
+      await supabase.from('cip_stage_history').insert({
+        cip_id: action.cipId,
+        from_stage: item.stage,
+        to_stage: 'cancelled',
+        reason: `[Rejected at investigate] ${action.reason}`,
+      });
+      return { ok: true };
+    }
+
+    case 'advance_to_deploy': {
+      const item = await fetchCipItem(action.cipId);
+      const { error: e1 } = await supabase
+        .from('cip_items')
+        .update({ stage: 'rolling_out' })
+        .eq('id', action.cipId);
+      if (e1) throw e1;
+      await supabase.from('cip_stage_history').insert({
+        cip_id: action.cipId,
+        from_stage: item.stage,
+        to_stage: 'rolling_out',
+        reason: 'Advanced from Validate tab',
+      });
+      return { ok: true };
+    }
+
+    case 'collect_more_data': {
+      const { error } = await supabase.from('cip_comments').insert({
+        cip_id: action.cipId,
+        comment_type: 'system',
+        content: `[More data collection requested] ${action.reason}`,
+      });
+      if (error) throw error;
+      return { ok: true };
+    }
+
+    case 'partial_deploy': {
+      const item = await fetchCipItem(action.cipId);
+      const { error: e1 } = await supabase
+        .from('cip_items')
+        .update({ stage: 'rolling_out', journey_type: 'A' })
+        .eq('id', action.cipId);
+      if (e1) throw e1;
+      await supabase.from('cip_stage_history').insert({
+        cip_id: action.cipId,
+        from_stage: item.stage,
+        to_stage: 'rolling_out',
+        reason: `[Partial deploy] ${action.reason}`,
+      });
+      return { ok: true };
+    }
+  }
 }
