@@ -82,3 +82,43 @@ export const WORKFLOW_TABS: Array<{
   { key: "validate",    label: "Validate",    steps: "08+09" },
   { key: "deploy",      label: "Deploy",      steps: "10+JB" },
 ];
+
+// ── PRD v3.2 additions ──
+
+export interface EvidencePoint {
+  year_month: string;
+  call_count: number;
+  rework_count: number;
+  cumulative_work_min: number;
+  is_current: boolean;
+}
+
+export interface EvidenceStats {
+  callsThisMonth: number;
+  callsAvg: number;
+  callsChangePct: number;
+  cusumValue: number | null;
+  cusumUcl: number | null;
+  cusumMultiplier: number | null;
+  affectedRatio: number | null;
+  modelAvgAffectedRatio: number | null;
+  trendSlope: number | null;
+  trendPValue: number | null;
+  trendIsSignificant: boolean;
+}
+
+export interface TimelineEntry {
+  ts: string;
+  kind: 'stage' | 'comment' | 'system';
+  actor: string;
+  payload: Record<string, unknown>;
+}
+
+export interface CardComment {
+  id: string;
+  cip_id: string;
+  comment_type: string;
+  content: string;
+  created_by: string | null;
+  created_at: string;
+}
