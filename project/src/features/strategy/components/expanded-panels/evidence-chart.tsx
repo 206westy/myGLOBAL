@@ -112,7 +112,10 @@ export function EvidenceChart({
             dataKey="call_count"
             stroke="hsl(var(--primary))"
             strokeWidth={2}
-            dot={(props: CurrentDotProps) => <CurrentDot {...props} />}
+            dot={(dotProps: CurrentDotProps & { key?: React.Key }) => {
+              const { key, ...rest } = dotProps;
+              return <CurrentDot key={key} {...rest} />;
+            }}
             activeDot={{ r: 4 }}
             isAnimationActive={false}
           />
