@@ -18,7 +18,6 @@ import { cn } from '@/lib/utils';
 import { useDashboardStore } from '../../hooks/use-dashboard-store';
 import { MAIN_TABS, MAIN_TAB_LABELS, SIDEBAR_LABELS } from '../../constants/nav';
 import { type MainTab, type DetailTab } from '../../hooks/use-dashboard-store';
-import { StrategyHeaderBar } from '@/features/strategy/components/layout/strategy-header-bar';
 
 const TAB_ROUTES: Record<MainTab, string> = {
   dashboard:  '/dashboard',
@@ -149,8 +148,9 @@ export function ContentHeader() {
         </div>
       </div>
 
-      {/* Row 2: Sub-tabs + controls (context-aware) */}
-      {activeMainTab === 'strategy' ? <StrategyHeaderBar /> : activeMainTab === 'dashboard' ? <DashboardHeaderBar /> : null}
+      {/* Row 2: Sub-tabs + controls (context-aware).
+           Strategy moved sub-tabs into the page body (WorkflowHeaderBar) for the 6-tab workflow. */}
+      {activeMainTab === 'dashboard' ? <DashboardHeaderBar /> : null}
     </div>
   );
 }

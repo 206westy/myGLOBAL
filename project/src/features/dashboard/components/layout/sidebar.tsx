@@ -1,11 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, type ComponentType } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Settings, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Search, Settings, HelpCircle, ChevronLeft, ChevronRight,
+  BarChart3, Activity, LineChart,
+  Columns3, CalendarRange, ScanSearch,
+  Upload, Play, Database, Users, Sparkles,
+  ArrowLeft,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useDashboardStore } from '../../hooks/use-dashboard-store';
+import { useDashboardStore, type StrategyView } from '../../hooks/use-dashboard-store';
 import { SIDEBAR_ITEMS } from '../../constants/nav';
 import { MyGlobalMark } from '../shared/my-global-mark';
 
@@ -15,12 +21,45 @@ const KPI_GROUPS = [
   { key: 'forecast',      label: 'Forecast Analytics'   },
 ] as const;
 
+interface StrategySidebarItem {
+  key: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  view?: StrategyView;
+  href?: string;
+  disabled?: boolean;
+}
+
+const STRATEGY_INTELLIGENCE: StrategySidebarItem[] = [
+  { key: 'cip-roi',       label: 'CIP ROI',          icon: BarChart3, view: 'intel-roi' },
+  { key: 'equip-health',  label: 'Equipment health', icon: Activity,  view: 'intel-health' },
+  { key: 'effectiveness', label: 'Effectiveness',    icon: LineChart, view: 'intel-effectiveness' },
+];
+
+const STRATEGY_AUX: StrategySidebarItem[] = [
+  { key: 'kanban',    label: 'Kanban (7 columns)', icon: Columns3,      view: 'kanban' },
+  { key: 'gantt',     label: 'Timeline (Gantt)',   icon: CalendarRange, view: 'gantt' },
+  { key: 'screening', label: 'Screening archive',  icon: ScanSearch,    view: 'screening-archive' },
+];
+
+const STRATEGY_SETTINGS: StrategySidebarItem[] = [
+  { key: 'import',     label: 'CSV Import (SAP)',  icon: Upload,   href: '/admin/import' },
+  { key: 'ccb-import', label: 'CCB JSONL Import',  icon: Upload,   href: '/admin/ccb-import' },
+  { key: 'run',        label: 'Run screening',     icon: Play,     view: 'screening-run' },
+  { key: 'ai-tools',   label: 'AI Tools',          icon: Sparkles, href: '/admin/ai-tools' },
+  { key: 'lookups',    label: 'Lookup tables',     icon: Database, disabled: true },
+  { key: 'users',      label: 'Users / Roles',     icon: Users,    disabled: true },
+];
+
 export function Sidebar() {
   const pathname = usePathname();
   const isDashboard = pathname.startsWith('/dashboard') || pathname === '/';
+  const isStrategy = pathname.startsWith('/strategy');
   const {
     activeSidebarItem,
     setSidebarItem,
+    activeStrategyView,
+    setStrategyView,
     sidebarCollapsed,
     setSidebarCollapsed,
     toggleSidebar,
@@ -135,6 +174,40 @@ export function Sidebar() {
             })}
           </div>
         )}
+
+        {/* Strategy sidebar — Intelligence / Workflow Aux / Settings */}
+        {isStrategy && (
+          <div className="mt-2 space-y-3">
+            {activeStrategyView !== 'workflow' && (
+              <button
+                onClick={() => setStrategyView('workflow')}
+                className="flex h-9 w-full items-center gap-2 rounded-lg px-3 text-[0.78rem] font-medium text-primary transition-colors hover:bg-primary/10"
+              >
+                <ArrowLeft className="h-3.5 w-3.5 shrink-0" />
+                Back to Workflow
+              </button>
+            )}
+
+            <StrategySidebarGroup
+              title="Intelligence"
+              items={STRATEGY_INTELLIGENCE}
+              activeView={activeStrategyView}
+              onSelectView={setStrategyView}
+            />
+            <StrategySidebarGroup
+              title="Workflow Aux"
+              items={STRATEGY_AUX}
+              activeView={activeStrategyView}
+              onSelectView={setStrategyView}
+            />
+            <StrategySidebarGroup
+              title="Settings"
+              items={STRATEGY_SETTINGS}
+              activeView={activeStrategyView}
+              onSelectView={setStrategyView}
+            />
+          </div>
+        )}
       </nav>
 
       {/* Footer */}
@@ -161,5 +234,64 @@ export function Sidebar() {
         </button>
       </div>
     </aside>
+  );
+}
+
+function StrategySidebarGroup({
+  title,
+  items,
+  activeView,
+  onSelectView,
+}: {
+  title: string;
+  items: StrategySidebarItem[];
+  activeView: StrategyView;
+  onSelectView: (v: StrategyView) => void;
+}) {
+  return (
+    <div>
+      <p className="px-3 pb-1 pt-1 text-[0.63rem] font-semibold uppercase tracking-wider text-muted-foreground">
+        {title}
+      </p>
+      {items.map((item) => {
+        const Icon = item.icon;
+        const isActive = !!item.view && activeView === item.view;
+
+        const className = cn(
+          'flex h-9 w-full items-center gap-2.5 rounded-lg px-3 transition-colors duration-150 text-left',
+          isActive
+            ? 'bg-primary-fixed text-on-primary-fixed-variant font-semibold'
+            : item.disabled
+              ? 'text-muted-foreground/50 cursor-not-allowed'
+              : 'text-muted-foreground hover:bg-surface-container-low hover:text-foreground',
+        );
+
+        if (item.href) {
+          return (
+            <Link key={item.key} href={item.href} className={className}>
+              <Icon className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate text-[0.82rem]">{item.label}</span>
+            </Link>
+          );
+        }
+
+        return (
+          <button
+            key={item.key}
+            type="button"
+            onClick={() => !item.disabled && item.view && onSelectView(item.view)}
+            disabled={item.disabled}
+            className={className}
+            title={item.disabled ? 'Available in P1' : undefined}
+          >
+            <Icon className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate text-[0.82rem]">{item.label}</span>
+            {item.disabled && (
+              <span className="ml-auto text-[0.6rem] text-muted-foreground/60">P1</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
   );
 }

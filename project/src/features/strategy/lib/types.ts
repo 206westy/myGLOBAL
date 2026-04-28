@@ -1,5 +1,7 @@
 'use client';
 
+import type { AiRecommendation } from './workflow-types';
+
 export type StrategyStatus = 'backlog' | 'ready' | 'in_progress' | 'review' | 'done';
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
 export type Effort = 'S' | 'M' | 'L' | 'XL';
@@ -106,6 +108,7 @@ export interface ScreeningResult {
   affected_equip_count: number;
   total_equip_count: number;
   created_at: string;
+  ai_recommendation: AiRecommendation | null;
   hints?: ScreeningHint[];
 }
 
@@ -170,6 +173,8 @@ export interface CipItem {
   detected_at: string | null;
   registered_at: string | null;
   resolved_at: string | null;
+  ai_recommendation: AiRecommendation | null;
+  sla_deadline: string | null;
 }
 
 export interface MonthlyPartStat {
